@@ -16,33 +16,49 @@ jobs:
       - name: Docker Compose version
         run: docker compose version
 
-      #  Создаём папку для Allure истории (если ещё нет)
+      # Создаём папку для Allure истории (если ещё нет)
       - name: Prepare Allure history
         run: |
           mkdir -p tests/allure-results/history
           if [ -d ./.github/gh-pages/history ]; then
-            cp -R ./.github/gh-pages/history/* tests/allure-results/history/
+            cp -R ./.github/gh-pages/history/* tests/allure-results/history/ || echo "No history found"
           fi
 
-      #  Поднимаем API сервис
+      # Поднимаем API сервис
       - name: Start API service
         run: docker compose up -d api
 
-      #  Запускаем тесты
+      # Ждём, пока API станет доступен (опционально)
+      - name: Wait for API
+        run: |
+          echo "Waiting for API to be ready..."
+          for i in {1..10}; do
+            curl -s http://localhost:8000/health && break
+            sleep 3
+          done
+
+      # Запускаем тесты через отдельный контейнер с volume для истории
       - name: Run API tests
-        run: docker compose run --rm tests
+        run: docker compose run --rm \
+              -v allure-results:/usr/workspace/tests/allure-results \
+              -v allure-history:/usr/workspace/tests/allure-results/history \
+              tests
 
-      #  Генерируем Allure HTML-отчёт
+      # Генерируем Allure HTML-отчёт
       - name: Generate Allure report
-        run: docker compose run --rm report
+        run: docker compose run --rm \
+              -v allure-results:/usr/workspace/tests/allure-results \
+              -v allure-history:/usr/workspace/tests/allure-results/history \
+              -v ./tests/allure-report:/usr/workspace/tests/allure-report \
+              report
 
-      #  Сохраняем новую историю для следующего прогона
+      # Сохраняем новую историю для следующего прогона
       - name: Update Allure history
         run: |
           mkdir -p ./.github/gh-pages/history
           cp -R tests/allure-report/history/* ./.github/gh-pages/history/ || echo "No history generated"
 
-      #  Деплой отчёта на GitHub Pages
+      # Деплой отчёта на GitHub Pages
       - name: Deploy Allure report
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
@@ -51,6 +67,7 @@ jobs:
           folder: tests/allure-report
           clean: true
 
-      # ⃣ Останавливаем API
+      # Останавливаем все сервисы
       - name: Stop API service
         run: docker compose down
+
