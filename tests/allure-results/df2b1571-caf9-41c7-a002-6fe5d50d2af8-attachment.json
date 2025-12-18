@@ -1,0 +1,40 @@
+{
+    "detail": [
+        {
+            "type": "missing",
+            "loc": [
+                "body",
+                1,
+                "author"
+            ],
+            "msg": "Field required",
+            "input": {
+                "title": "Invalid only title"
+            }
+        },
+        {
+            "type": "missing",
+            "loc": [
+                "body",
+                1,
+                "year"
+            ],
+            "msg": "Field required",
+            "input": {
+                "title": "Invalid only title"
+            }
+        },
+        {
+            "type": "missing",
+            "loc": [
+                "body",
+                1,
+                "pages"
+            ],
+            "msg": "Field required",
+            "input": {
+                "title": "Invalid only title"
+            }
+        }
+    ]
+}
