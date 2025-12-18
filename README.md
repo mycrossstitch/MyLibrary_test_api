@@ -172,7 +172,11 @@ docker-compose run --rm tests sh -c "allure generate tests/allure-results --clea
 # ⚡ CI/CD
 
 Настроен GitHub Actions:
+
 Запуск тестов в Docker
+
 Генерация Allure отчёта
+
 Деплой отчёта на GitHub Pages
+
 История тестов сохраняется между прогонками для Allure
