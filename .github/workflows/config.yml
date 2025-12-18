@@ -37,7 +37,7 @@ jobs:
 
       #  Генерируем Allure HTML-отчёт
       - name: Generate Allure report
-        run: docker compose run /bin/sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
+        run: docker compose run sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
 
       #  Сохраняем новую историю для следующего прогона
       - name: Update Allure history
