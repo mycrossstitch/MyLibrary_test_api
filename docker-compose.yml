@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    container_name: my_library_api
+    volumes:
+      - ./:/usr/workspace
+    ports:
+      - "8000:8000"
+    environment:
+      - API_ENV=docker
+    networks:
+      - library-network
+
+  tests:
+    build: .
+    container_name: my_library_tests
+    volumes:
+      - ./:/usr/workspace
+    depends_on:
+      - api
+    environment:
+      - API_HOST=http://api:8000
+    command: >
+      sh -c "pytest -sv --alluredir=tests/allure-results"
+    working_dir: /usr/workspace
+    networks:
+      - library-network
+
+  report:
+    build: .
+    container_name: my_library_report
+    volumes:
+      - ./:/usr/workspace
+    command: >
+      sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
+    working_dir: /usr/workspace
+
+
+networks:
+  library-network:
+    driver: bridge
