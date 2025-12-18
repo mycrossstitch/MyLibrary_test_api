@@ -10,7 +10,7 @@ jobs:
     steps:
       # Клонируем код
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 #        with:
 #          ref: gh-pages
 #          path: ./.github/gh-pages
@@ -26,6 +26,21 @@ jobs:
           if [ -d ./.github/gh-pages/history ]; then
             cp -R ./.github/gh-pages/history/* tests/allure-results/history/
           fi
+       # чекаут gh-pages отдельно
+      - name: Checkout gh-pages history
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+         #  копируем историю ИЗ gh-pages
+      - name: Copy Allure history from gh-pages
+        run: |
+            if [ -d gh-pages/history ]; then
+              cp -R gh-pages/history/* tests/allure-results/history/
+            else
+              echo "No history yet"
+            fi   
 
       #  Поднимаем API сервис
       - name: Start API service
@@ -37,7 +52,7 @@ jobs:
 
       #  Генерируем Allure HTML-отчёт
       - name: Generate Allure report
-        run: docker compose run --rm tests sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
+        run: docker compose run --rm tests -c "allure generate tests/allure-results --clean -o tests/allure-report"
 
 
       #  Сохраняем новую историю для следующего прогона
@@ -53,7 +68,7 @@ jobs:
           token: ${{ secrets.CI_TOKEN }}
           branch: gh-pages
           folder: tests/allure-report
-          clean: true
+          clean: false
 
       # ⃣ Останавливаем API
       - name: Stop API service
