@@ -43,7 +43,8 @@ jobs:
       #  Сохраняем новую историю для следующего прогона
       - name: Update Allure history
         run: |         
-          cp -R tests/allure-report/history/* ./.github/gh-pages/history/ 
+          mkdir -p ./.github/gh-pages/history 
+          cp -R tests/allure-report/history/* ./.github/gh-pages/history/ || echo "No history to copy"
 
       #  Деплой отчёта на GitHub Pages
       - name: Deploy Allure report
