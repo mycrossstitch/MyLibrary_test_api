@@ -29,16 +29,6 @@ services:
     networks:
       - library-network
 
-#  report:
-#    build: .
-#    container_name: my_library_report
-#    volumes:
-#      - ./:/usr/workspace
-#    command: >
-#      sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
-#    working_dir: /usr/workspace
-
-
 networks:
   library-network:
     driver: bridge

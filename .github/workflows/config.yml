@@ -11,9 +11,6 @@ jobs:
       # Клонируем код
       - name: Checkout code
         uses: actions/checkout@v4
-#        with:
-#          ref: gh-pages
-#          path: ./.github/gh-pages
 
       # Проверяем версию Docker Compose
       - name: Docker Compose version
