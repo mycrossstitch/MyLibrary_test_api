@@ -1,0 +1,59 @@
+name: API Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Compose
+        run: |
+          docker compose version
+
+      # Поднимаем API (только API, чтобы тесты могли к нему обратиться)
+      - name: Start API service
+        run: |
+          docker compose up -d api
+
+      # Запускаем тесты (создаются allure-results)
+      - name: Run API tests
+        run: |
+          docker compose run --rm tests
+
+      # Копируем историю из gh-pages, если есть
+      - name: Prepare Allure history
+        run: |
+          mkdir -p tests/allure-results/history
+          if [ -d ./.github/gh-pages/history ]; then
+            cp -R ./.github/gh-pages/history/* tests/allure-results/history/
+          fi
+
+      # Генерируем HTML-отчёт через контейнер report
+      - name: Generate Allure report
+        run: |
+          docker compose run --rm report
+
+      # Обновляем историю
+      - name: Update Allure history for next run
+        run: |
+          mkdir -p ./.github/gh-pages/history
+          cp -R tests/allure-report/history/* ./.github/gh-pages/history/ || echo "No history found"
+
+      # Деплой на GitHub Pages
+      - name: Deploy Allure report to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          token: ${{ secrets.CI_TOKEN }}
+          branch: gh-pages
+          folder: tests/allure-report
+          clean: true
+
+      # Останавливаем API после тестов
+      - name: Stop API service
+        run: |
+          docker compose down
