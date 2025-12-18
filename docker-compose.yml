@@ -17,8 +17,8 @@ services:
     build: .
     container_name: my_library_tests
     volumes:
-      - ./:/usr/workspace        # код проекта
-      - allure-results:/usr/workspace/tests/allure-results  # отдельный volume для результатов
+      - ./:/usr/workspace
+
     depends_on:
       - api
     environment:
@@ -29,18 +29,15 @@ services:
     networks:
       - library-network
 
-  report:
-    build: .
-    container_name: my_library_report
-    volumes:
-      - ./:/usr/workspace
-      - allure-results:/usr/workspace/tests/allure-results  # тот же volume!
-    command: >
-      sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
-    working_dir: /usr/workspace
+#  report:
+#    build: .
+#    container_name: my_library_report
+#    volumes:
+#      - ./:/usr/workspace
+#    command: >
+#      sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
+#    working_dir: /usr/workspace
 
-volumes:
-  allure-results:
 
 networks:
   library-network:

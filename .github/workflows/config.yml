@@ -11,6 +11,9 @@ jobs:
       # Клонируем код
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: ./.github/gh-pages
 
       # Проверяем версию Docker Compose
       - name: Docker Compose version
@@ -34,13 +37,12 @@ jobs:
 
       #  Генерируем Allure HTML-отчёт
       - name: Generate Allure report
-        run: docker compose run --rm report
+        run: docker compose run /bin/sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
 
       #  Сохраняем новую историю для следующего прогона
       - name: Update Allure history
-        run: |
-          mkdir -p ./.github/gh-pages/history
-          cp -R tests/allure-report/history/* ./.github/gh-pages/history/ || echo "No history generated"
+        run: |         
+          cp -R tests/allure-report/history/* ./.github/gh-pages/history/ 
 
       #  Деплой отчёта на GitHub Pages
       - name: Deploy Allure report
