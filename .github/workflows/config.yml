@@ -8,24 +8,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Клонируем код
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Docker Compose
-        run: |
-          docker compose version
+      # Проверяем версию Docker Compose
+      - name: Docker Compose version
+        run: docker compose version
 
-      # Поднимаем API (только API, чтобы тесты могли к нему обратиться)
-      - name: Start API service
-        run: |
-          docker compose up -d api
-
-      # Запускаем тесты (создаются allure-results)
-      - name: Run API tests
-        run: |
-          docker compose run --rm tests
-
-      # Копируем историю из gh-pages, если есть
+      #  Создаём папку для Allure истории (если ещё нет)
       - name: Prepare Allure history
         run: |
           mkdir -p tests/allure-results/history
@@ -33,19 +24,26 @@ jobs:
             cp -R ./.github/gh-pages/history/* tests/allure-results/history/
           fi
 
-      # Генерируем HTML-отчёт через контейнер report
-      - name: Generate Allure report
-        run: |
-          docker compose run --rm report
+      #  Поднимаем API сервис
+      - name: Start API service
+        run: docker compose up -d api
 
-      # Обновляем историю
-      - name: Update Allure history for next run
+      #  Запускаем тесты
+      - name: Run API tests
+        run: docker compose run --rm tests
+
+      #  Генерируем Allure HTML-отчёт
+      - name: Generate Allure report
+        run: docker compose run --rm report
+
+      #  Сохраняем новую историю для следующего прогона
+      - name: Update Allure history
         run: |
           mkdir -p ./.github/gh-pages/history
-          cp -R tests/allure-report/history/* ./.github/gh-pages/history/ || echo "No history found"
+          cp -R tests/allure-report/history/* ./.github/gh-pages/history/ || echo "No history generated"
 
-      # Деплой на GitHub Pages
-      - name: Deploy Allure report to GitHub Pages
+      #  Деплой отчёта на GitHub Pages
+      - name: Deploy Allure report
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
           token: ${{ secrets.CI_TOKEN }}
@@ -53,7 +51,6 @@ jobs:
           folder: tests/allure-report
           clean: true
 
-      # Останавливаем API после тестов
+      # ⃣ Останавливаем API
       - name: Stop API service
-        run: |
-          docker compose down
+        run: docker compose down

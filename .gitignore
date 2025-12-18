@@ -4,3 +4,5 @@ __pycache__/
 .idea
 *.iml
 .env
+tests/allure-report
+tests/allure-report/history/allure-results
