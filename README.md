@@ -100,8 +100,11 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ### 5. Приложение будет доступно по адресам:
 
 Swagger UI: http://localhost:8000/docs
+
 ReDoc: http://localhost:8000/redoc
+
 Основное API: http://localhost:8000
+
 
 ## Запуск через Docker
 #### Быстрый запуск:
@@ -155,6 +158,12 @@ allure serve tests/allure-results
 allure generate tests/allure-results --clean -o tests/allure-report
 ```
 ## Запуск тестов через Docker:
+#### Быстрый запуск api+tests:
+```
+docker-compose up -d --build
+
+```
+
 ```
 docker-compose run --rm tests
 docker-compose run --rm tests sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
