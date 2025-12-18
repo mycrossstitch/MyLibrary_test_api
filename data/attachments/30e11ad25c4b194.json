@@ -1,0 +1,40 @@
+{
+    "detail": [
+        {
+            "type": "string_type",
+            "loc": [
+                "body",
+                "title"
+            ],
+            "msg": "Input should be a valid string",
+            "input": 123
+        },
+        {
+            "type": "string_type",
+            "loc": [
+                "body",
+                "author"
+            ],
+            "msg": "Input should be a valid string",
+            "input": true
+        },
+        {
+            "type": "int_parsing",
+            "loc": [
+                "body",
+                "year"
+            ],
+            "msg": "Input should be a valid integer, unable to parse string as an integer",
+            "input": "two thousand"
+        },
+        {
+            "type": "int_parsing",
+            "loc": [
+                "body",
+                "pages"
+            ],
+            "msg": "Input should be a valid integer, unable to parse string as an integer",
+            "input": "many"
+        }
+    ]
+}
