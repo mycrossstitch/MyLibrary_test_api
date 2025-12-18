@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   api:
     build: .
@@ -10,23 +12,20 @@ services:
       - API_ENV=docker
     networks:
       - library-network
-    command: >
-      sh -c "uvicorn main:app --host 0.0.0.0 --port 8000"
 
   tests:
     build: .
     container_name: my_library_tests
+    volumes:
+      - ./:/usr/workspace        # код проекта
+      - allure-results:/usr/workspace/tests/allure-results  # отдельный volume для результатов
     depends_on:
       - api
     environment:
       - API_HOST=http://api:8000
-    volumes:
-      - ./:/usr/workspace
-      - allure-results:/usr/workspace/tests/allure-results
-      - allure-history:/usr/workspace/tests/allure-results/history
-    working_dir: /usr/workspace
     command: >
       sh -c "pytest -sv --alluredir=tests/allure-results"
+    working_dir: /usr/workspace
     networks:
       - library-network
 
@@ -35,16 +34,13 @@ services:
     container_name: my_library_report
     volumes:
       - ./:/usr/workspace
-      - allure-results:/usr/workspace/tests/allure-results
-      - allure-history:/usr/workspace/tests/allure-results/history
-      - ./tests/allure-report:/usr/workspace/tests/allure-report
-    working_dir: /usr/workspace
+      - allure-results:/usr/workspace/tests/allure-results  # тот же volume!
     command: >
       sh -c "allure generate tests/allure-results --clean -o tests/allure-report"
+    working_dir: /usr/workspace
 
 volumes:
   allure-results:
-  allure-history:
 
 networks:
   library-network:
