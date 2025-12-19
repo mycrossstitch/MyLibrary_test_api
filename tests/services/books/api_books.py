@@ -21,7 +21,7 @@ class BooksAPI(Helper):
         response = requests.post(
             url=self.endpoint.create_book,
             headers=self.headers.basic,
-            json=self.payloads.create_book,
+            json=self.payloads.create_book(),
         )
         assert response.status_code == 201, response.json()
         self.attach_response(response.json())
@@ -49,7 +49,7 @@ class BooksAPI(Helper):
 
     @allure.step("Update book by id (full update)")
     def update_book_full(self, book_id):
-        payload = self.payloads.create_book
+        payload = self.payloads.create_book()
 
         response = requests.put(
             url=self.endpoint.update_book_by_id(book_id),
@@ -108,13 +108,8 @@ class BooksAPI(Helper):
 
     @allure.step("Create book with invalid field types - expect 422")
     def create_book_invalid_types(self):
-        payload = {
-            "title": 123,
-            "author": True,
-            "year": "two thousand",
-            "pages": "many",
-            "is_read": "yes",
-        }
+        payload = self.payloads.create_book()
+        payload["title"] = 123
 
         response = requests.post(
             url=self.endpoint.create_book,
@@ -140,7 +135,7 @@ class BooksAPI(Helper):
         response = requests.put(
             url=self.endpoint.update_book_by_id(999999),
             headers=self.headers.basic,
-            json=self.payloads.create_book,
+            json=self.payloads.create_book(),
         )
 
         assert response.status_code == 404
@@ -186,7 +181,7 @@ class BooksAPI(Helper):
     @allure.step("Create books in bulk with invalid item - expect 422")
     def create_books_bulk_with_invalid_item(self):
         payload = [
-            self.payloads.create_book,
+            self.payloads.create_book(),
             {"title": "Invalid only title"},
         ]
 
