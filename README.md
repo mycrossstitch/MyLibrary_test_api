@@ -1,7 +1,12 @@
 # 📚 My Library API
 
 ## О проекте
-FastAPI приложение для управления библиотекой книг с использованием SQLite базы данных.
+My Library API — это FastAPI-приложение для управления библиотекой книг с использованием SQLite базы данных.
+Проект реализует полный CRUD-функционал, поиск и фильтрацию книг, а также сопровождается автоматизированными API-тестами.
+
+Автотесты написаны на pytest с использованием Allure для формирования наглядных отчётов.
+Тестирование полностью контейнеризовано и запускается как локально, так и в Docker / GitHub Actions, что обеспечивает
+стабильную проверку качества API при каждом запуске CI.
 
 ## 🚀 Особенности
 
@@ -34,45 +39,57 @@ FastAPI приложение для управления библиотекой 
 ## Структура проекта
 ```
 MyLibrary_test_api/
-├── main.py              # Точка входа приложения
-├── database.py          # Настройка подключения к БД
-├── library.db           # База данных SQLite
-├── models/              # SQLAlchemy модели
-│   ├──  __init__.py
-│   └── books.py         # Модель книги
-├── schemas/             # Pydantic схемы
-│   ├──  __init__.py
-│   └── books.py         # Схемы для валидации
-├── routers/             # Маршруты API
-│   ├──  __init__.py
-│   └── books.py         # Эндпоинты для книг
-└── repository/          # Паттерн репозиторий
-│   ├──  __init__.py
-│   └── books.py         # Логика работы с БД
-└── tests/               # Папка с тестами   
-│   ├──  .env
-│   ├──  __init__.py
-│   ├──  conftest.py 
-│   ├──  config/
-│  		 ├──  __init__.py
-│  		 ├──  base_test.py		
-│  		 └── headers.py 
-│   ├──  services/
-│			└── books/
-│  		 		├──  __init__.py
-│  		 		├──  api_books.py
-│  		 		├──  endpoints.py			
-│  		 		└──  payloads.py 
-│   ├──  tests/
-│  		 └── test_books.py 
-│   └── utils/
-│  	 	 ├──  __init__.py
-│  		 └──  helper.py   
-├── Dockerfile               # Конфигурация Docker
-├── docker-compose.yml       # Docker Compose
-├── requirements.txt         # Зависимости Python
+├── src/
+│   └── my_library/                # 📦 Основной Python-пакет приложения
+│       ├── __init__.py
+│       ├── main.py                # Точка входа FastAPI
+│       ├── database.py            # Настройка подключения к БД
+│       ├── library.db             # SQLite база данных
+│       │
+│       ├── models/                # SQLAlchemy модели
+│       │   ├── __init__.py
+│       │   └── books.py
+│       │
+│       ├── schemas/               # Pydantic схемы
+│       │   ├── __init__.py
+│       │   └── books.py
+│       │
+│       ├── routers/               # FastAPI роутеры
+│       │   ├── __init__.py
+│       │   └── books.py
+│       │
+│       └── repository/            # Паттерн Repository
+│           ├── __init__.py
+│           └── books.py
+│
+├── tests/                          # 🧪 Автотесты 
+│   ├── .env
+│   ├── conftest.py
+│   │
+│   ├── config/
+│   │   ├── base_test.py
+│   │   └── headers.py
+│   │
+│   ├── services/
+│   │   └── books/
+│   │       ├── api_books.py
+│   │       ├── endpoints.py
+│   │       └── payloads.py
+│   │
+│   ├── tests/
+│   │   └── test_books.py
+│   │
+│   ├── utils/
+│       └── helper.py
+│
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
 ├── pytest.ini
-└── README.md                # Документация
+├── README.md
+└── .github/
+    └── workflows/
+        └── api-tests.yml
 ```
 ---
 
