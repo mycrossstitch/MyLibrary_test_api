@@ -97,8 +97,8 @@ MyLibrary_test_api/
 
 ### 1. Клонируем репозиторий:
 ```bash
-git clone https://github.com/mycrossstitch/MyLibrary
-cd MyLibrary
+git clone https://github.com/mycrossstitch/MyLibrary_test_api
+cd MyLibrary_test_api
 ```
 ### 2.Создаем виртуальное окружение:
 ```
