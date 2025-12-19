@@ -11,6 +11,7 @@ RUN mkdir /allure && \
     ln -s /allure/allure-2.22.2/bin/allure /usr/bin/allure
 
 WORKDIR /usr/workspace
+ENV PYTHONPATH=/usr/workspace/src
 
 COPY ./requirements.txt /usr/workspace
 
@@ -22,4 +23,4 @@ RUN pip install --no-cache-dir --upgrade pip && \
 EXPOSE 8000
 
 # Запускаем приложение
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "my_library.main:app", "--host", "0.0.0.0", "--port", "8000"]

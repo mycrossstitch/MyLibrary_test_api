@@ -5,7 +5,7 @@ from tests.config.headers import Headers
 from tests.services.books.endpoints import Endpoints
 from tests.services.books.payloads import Payloads
 from tests.utils.helper import Helper
-from schemas.books import SBook
+from src.my_library.schemas.books import SBook
 
 
 class BooksAPI(Helper):
